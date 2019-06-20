@@ -1,0 +1,26 @@
+{
+  "name": "justify-it",
+  "version": "1.0.0",
+  "description": "Justify the text of articles, one-time setup per website",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielrozenberg/justify-it"
+  },
+  "main": "script.js",
+  "scripts": {
+    "test": "eslint . && jest --verbose"
+  },
+  "author": "Daniel Rozenberg",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "5.16.0",
+    "eslint-config-google": "0.13.0",
+    "jest": "24.8.0",
+    "jest-webextension-mock": "3.5.0"
+  },
+  "jest": {
+    "setupFiles": [
+      "jest-webextension-mock"
+    ]
+  }
+}
