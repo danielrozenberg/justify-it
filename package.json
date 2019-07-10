@@ -8,19 +8,12 @@
   },
   "main": "script.js",
   "scripts": {
-    "test": "eslint . && jest --verbose"
+    "test": "eslint ."
   },
   "author": "Daniel Rozenberg",
   "license": "ISC",
   "devDependencies": {
     "eslint": "6.0.1",
-    "eslint-config-google": "0.13.0",
-    "jest": "24.8.0",
-    "jest-webextension-mock": "3.5.0"
-  },
-  "jest": {
-    "setupFiles": [
-      "jest-webextension-mock"
-    ]
+    "eslint-config-google": "0.13.0"
   }
 }
