@@ -13,6 +13,11 @@
     "activeTab",
     "storage"
   ],
+  "background": {
+    "scripts": [
+      "background_scripts/script.js"
+    ]
+  },
   "content_scripts": [
     {
       "matches": [

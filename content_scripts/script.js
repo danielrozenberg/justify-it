@@ -3,6 +3,8 @@ browser.runtime.onMessage.addListener((newSelector) => {
   justify(newSelector);
 });
 
+browser.runtime.sendMessage('show');
+
 let injectCss = () => {
   document.styleSheets[document.styleSheets.length-1].insertRule(`
   [__justify_it__] {
