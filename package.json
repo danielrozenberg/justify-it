@@ -13,7 +13,7 @@
   "author": "Daniel Rozenberg",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "6.2.0",
+    "eslint": "6.2.1",
     "eslint-config-google": "0.13.0"
   }
 }
