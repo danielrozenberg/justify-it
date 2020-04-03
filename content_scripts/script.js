@@ -1,10 +1,3 @@
-browser.runtime.onMessage.addListener((newSelector) => {
-  unjustify();
-  justify(newSelector);
-});
-
-browser.runtime.sendMessage('show');
-
 let injectCss = () => {
   document.styleSheets[document.styleSheets.length-1].insertRule(`
   [__justify_it__] {
@@ -16,6 +9,7 @@ let injectCss = () => {
 
 /**
  * Justify all elements that match the selector.
+ *
  * @param {string} selector string css selector.
  */
 function justify(selector) {
@@ -24,6 +18,9 @@ function justify(selector) {
     document.querySelectorAll(selector).forEach((element) => {
       element.setAttribute('__justify_it__', '__justify_it__');
     });
+    browser.runtime.sendMessage({action: 'on', selector});
+  } else {
+    browser.runtime.sendMessage({action: 'off'});
   }
 }
 
@@ -36,13 +33,27 @@ function unjustify() {
   });
 }
 
-const {hostname} = window.location;
-const storagePromise = browser.storage.sync.get(hostname)
-    .then((obj) => {
-      if (obj[hostname] && obj[hostname].selector) {
-        justify(obj[hostname].selector);
-      }
-    })
-    .catch(() => {});
+/**
+ *
+ */
+async function initialize() {
+  browser.runtime.onMessage.addListener(async (newSelector) => {
+    unjustify();
+    justify(newSelector);
+  });
 
-exports.storagePromise = storagePromise;
+  await browser.runtime.sendMessage({action: 'show'});
+
+  try {
+    const {hostname} = window.location;
+    const storage = await browser.storage.sync.get(hostname);
+    const currentSelector =
+        (storage[hostname] && storage[hostname].selector) || '';
+    if (currentSelector) {
+      justify(storage[hostname].selector);
+    }
+  } catch (e) {
+    // Do nothing.
+  }
+}
+initialize();

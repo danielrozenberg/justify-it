@@ -1,8 +1,5 @@
-const selectorInput = document.querySelector('#selector');
-
-selectorInput.addEventListener('blur', () => {
-  window.close();
-});
+const selectorInput = document.getElementById('selector');
+const clearButton = document.getElementById('clear');
 
 selectorInput.addEventListener('keyup', (event) => {
   if (event.key === 'Enter') {
@@ -13,31 +10,31 @@ selectorInput.addEventListener('keyup', (event) => {
 browser.tabs.query({
   currentWindow: true,
   active: true,
-}).then((tabs) => {
+}).then(async (tabs) => {
   for (const tab of tabs) {
     const hostname = new URL(tab.url).hostname;
-    browser.storage.sync.get(hostname)
-        .then((obj) => {
-          if (obj[hostname] && obj[hostname].selector) {
-            selectorInput.value = obj[hostname].selector;
-          }
-        })
-        .catch(() => {})
-        .then(() => {
-          selectorInput.addEventListener('input', () => {
-            const selector = selectorInput.value;
-            if (selector) {
-              browser.storage.sync.set({
-                [hostname]: {
-                  selector,
-                },
-              });
-            } else {
-              browser.storage.sync.remove(hostname);
-            }
+    const storage = await browser.storage.sync.get(hostname);
+    selectorInput.value =
+        (storage[hostname] && storage[hostname].selector) || '';
 
-            browser.tabs.sendMessage(tab.id, selector);
-          });
+    selectorInput.addEventListener('input', () => {
+      const selector = selectorInput.value;
+      if (selector) {
+        browser.storage.sync.set({
+          [hostname]: {
+            selector,
+          },
         });
+      } else {
+        browser.storage.sync.remove(hostname);
+      }
+      browser.tabs.sendMessage(tab.id, selector);
+    });
+
+    clearButton.addEventListener('click', () => {
+      browser.storage.sync.remove(hostname);
+      browser.tabs.sendMessage(tab.id, '');
+      window.close();
+    });
   }
 });

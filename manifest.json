@@ -30,8 +30,7 @@
   ],
   "page_action": {
     "default_icon": "icons/icon.svg",
-    "default_title": "Justify It",
-    "default_popup": "panel/panel.html",
+    "default_title": "Justify It (off)",
     "show_matches": ["*://*/*"]
   },
   "browser_specific_settings": {
