@@ -1,9 +1,11 @@
 const TOAST_DISPLAY_MS = 1000;
 
+/* eslint-disable no-unused-vars */
 /**
  * Toast element.
  */
 class Toast {
+  /* eslint-enable no-unused-vars */
   /**
    * Constructor.
    *
@@ -93,5 +95,3 @@ class Toast {
     }, TOAST_DISPLAY_MS);
   }
 }
-
-exports.Toast = Toast;
