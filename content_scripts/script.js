@@ -37,23 +37,36 @@ function unjustify() {
  *
  */
 async function initialize() {
-  browser.runtime.onMessage.addListener(async (newSelector) => {
-    unjustify();
-    justify(newSelector);
+  const {hostname} = window.location;
+
+  browser.runtime.onMessage.addListener((message, _, sendResponse) => {
+    try {
+      const {selector} = message;
+
+      switch (message.action) {
+        case 'change':
+          unjustify();
+          justify(selector);
+          break;
+
+        case 'hostname':
+          sendResponse(hostname);
+          break;
+      }
+    } catch (e) {
+      console.exception('Justify It:', e);
+    }
   });
 
-  await browser.runtime.sendMessage({action: 'show'});
-
-  try {
-    const {hostname} = window.location;
-    const storage = await browser.storage.sync.get(hostname);
+  browser.runtime.sendMessage({action: 'show'});
+  browser.storage.sync.get(hostname).then((storage) => {
     const currentSelector =
         (storage[hostname] && storage[hostname].selector) || '';
     if (currentSelector) {
       justify(storage[hostname].selector);
     }
-  } catch (e) {
-    // Do nothing.
-  }
+  }).catch((e) => {
+    console.exception('Justify It:', e);
+  });
 }
 initialize();

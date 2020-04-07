@@ -28,12 +28,12 @@ browser.tabs.query({
       } else {
         browser.storage.sync.remove(hostname);
       }
-      browser.tabs.sendMessage(tab.id, selector);
+      browser.tabs.sendMessage(tab.id, {action: 'change', selector});
     });
 
     clearButton.addEventListener('click', () => {
       browser.storage.sync.remove(hostname);
-      browser.tabs.sendMessage(tab.id, '');
+      browser.tabs.sendMessage(tab.id, {action: 'change', selector: ''});
       window.close();
     });
   }

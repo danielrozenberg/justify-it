@@ -1,3 +1,5 @@
+const SELECTORS_ORDER = ['', 'p', 'article'];
+
 browser.runtime.onMessage.addListener((message, sender) => {
   const tabId = sender.tab.id;
   const {selector} = message;
@@ -13,10 +15,6 @@ browser.runtime.onMessage.addListener((message, sender) => {
         title: `Justifying ${selector}`,
         tabId,
       });
-      browser.pageAction.setPopup({
-        popup: selector == 'p' ? '' : 'panel/panel.html',
-        tabId,
-      });
       break;
 
     case 'off':
@@ -28,25 +26,25 @@ browser.runtime.onMessage.addListener((message, sender) => {
 });
 
 browser.pageAction.onClicked.addListener(async (tab) => {
-  try {
-    const hostname = new URL(tab.url).hostname;
-    const storage = await browser.storage.sync.get(hostname);
-    const currentSelector =
+  // `tab.url` is missing on Firefox for Android, so ask for it from the tab's
+  // `browser.runtime.onMessage` handler.
+  const hostname = tab.url ?
+      new URL(tab.url).hostname :
+      await browser.tabs.sendMessage(tab.id, {action: 'hostname'});
+
+
+  const storage = await browser.storage.sync.get(hostname);
+  const currentSelector =
         (storage[hostname] && storage[hostname].selector) || '';
-    if (!currentSelector) {
-      await browser.storage.sync.set({
-        [hostname]: {
-          selector: 'p',
-        }});
-      browser.tabs.sendMessage(tab.id, 'p');
-    } else if (currentSelector == 'p') {
-      await browser.storage.sync.set({
-        [hostname]: {
-          selector: 'article',
-        }});
-      browser.tabs.sendMessage(tab.id, 'article');
-    }
-  } catch (e) {
-    // Do nothing.
-  }
+
+  const nextSelector = SELECTORS_ORDER[
+      (SELECTORS_ORDER.indexOf(currentSelector) + 1) % SELECTORS_ORDER.length];
+  await browser.storage.sync.set({
+    [hostname]: {
+      selector: nextSelector,
+    }});
+  browser.tabs.sendMessage(tab.id, {
+    action: 'change',
+    selector: nextSelector,
+  });
 });
