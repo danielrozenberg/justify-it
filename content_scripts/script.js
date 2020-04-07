@@ -17,7 +17,7 @@ let injectIntoPage = () => {
 };
 
 /**
- * Justify all elements that match the selector.
+ * Justifies all elements that match the selector.
  *
  * @param {string} selector string css selector.
  */
@@ -25,7 +25,7 @@ function justify(selector) {
   if (selector) {
     injectIntoPage();
     document.querySelectorAll(selector).forEach((element) => {
-      element.setAttribute('__justify_it__', '__justify_it__');
+      element.setAttribute('__justify_it__', '');
     });
     browser.runtime.sendMessage({action: 'on', selector});
   } else {
