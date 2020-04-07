@@ -48,3 +48,17 @@ browser.pageAction.onClicked.addListener(async (tab) => {
     selector: nextSelector,
   });
 });
+
+if (browser.menus) {
+  // Context menus are not supported in Firefox for Android.
+  browser.menus.create({
+    contexts: ['page_action'],
+    onclick: async (info, tab) => {
+      const tabId = tab.id;
+      browser.pageAction.setPopup({popup: 'panel/panel.html', tabId});
+      await browser.pageAction.openPopup();
+      browser.pageAction.setPopup({popup: '', tabId});
+    },
+    title: 'Type my own CSS selector',
+  }, console.exception);
+}
