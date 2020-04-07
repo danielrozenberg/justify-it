@@ -1,10 +1,19 @@
-let injectCss = () => {
-  document.styleSheets[document.styleSheets.length-1].insertRule(`
-  [__justify_it__] {
-    text-align: justify !important;
-    hyphens: auto !important;
-  }`);
-  injectCss = () => {};
+let injectIntoPage = () => {
+  const {sheet} = document.head.appendChild(document.createElement('style'));
+  sheet.insertRule(
+      `[__justify_it__] {
+        text-align: justify !important;
+        hyphens: auto !important;
+       }`);
+
+  const toastElement = document.body.appendChild(
+      document.createElement('justify-it-toast'));
+  toastElement.id = '__justify_it__';
+  // eslint-disable-next-line no-undef
+  toastElement['toast'] = new Toast(toastElement);
+  toastElement.toast.titleText = 'Justify It:';
+
+  injectIntoPage = () => {};
 };
 
 /**
@@ -14,7 +23,7 @@ let injectCss = () => {
  */
 function justify(selector) {
   if (selector) {
-    injectCss();
+    injectIntoPage();
     document.querySelectorAll(selector).forEach((element) => {
       element.setAttribute('__justify_it__', '__justify_it__');
     });
@@ -24,13 +33,30 @@ function justify(selector) {
   }
 }
 
-/**
- * Remove justifying attribute from all.
- */
+/** Removes justifying attribute from all. */
 function unjustify() {
   document.querySelectorAll('[__justify_it__]').forEach((element) => {
     element.removeAttribute('__justify_it__');
   });
+}
+
+/**
+ * Displays a toast notification with the changed selector.
+ *
+ * @param {string} selector string css selector.
+ */
+async function displayToast(selector) {
+  // We perform a strict comparison (===) because by default we want to display
+  // the toast, so a displayToast of undefined is treated as true.
+  if ((await browser.storage.sync.get('displayToast')).displayToast !== false) {
+    const {toast} = document.getElementById('__justify_it__');
+    if (selector) {
+      toast.message = `Justifying ${selector}`;
+    } else {
+      toast.message = 'Off';
+    }
+    toast.display();
+  }
 }
 
 /**
@@ -47,6 +73,7 @@ async function initialize() {
         case 'change':
           unjustify();
           justify(selector);
+          displayToast(selector);
           break;
 
         case 'hostname':

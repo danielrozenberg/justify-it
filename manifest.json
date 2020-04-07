@@ -25,6 +25,7 @@
         "*://*/*"
       ],
       "js": [
+        "content_scripts/toast.js",
         "content_scripts/script.js"
       ]
     }
