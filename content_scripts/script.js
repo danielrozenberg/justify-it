@@ -65,9 +65,13 @@ async function displayToast(selector) {
 async function initialize() {
   const {hostname} = window.location;
 
+  const storage = await browser.storage.sync.get(hostname);
+  let selector = (storage[hostname] && storage[hostname].selector) || '';
+  justify(selector);
+
   browser.runtime.onMessage.addListener((message, _, sendResponse) => {
     try {
-      const {selector} = message;
+      selector = message.selector || selector;
 
       switch (message.action) {
         case 'change':
@@ -85,15 +89,16 @@ async function initialize() {
     }
   });
 
-  browser.runtime.sendMessage({action: 'show'});
-  browser.storage.sync.get(hostname).then((storage) => {
-    const currentSelector =
-        (storage[hostname] && storage[hostname].selector) || '';
-    if (currentSelector) {
-      justify(storage[hostname].selector);
+  new MutationObserver((mutations) => {
+    if (selector && mutations.some(
+        (mutation) => mutation.target.querySelector(selector))) {
+      justify(selector);
     }
-  }).catch((e) => {
-    console.exception('Justify It:', e);
+  }).observe(document.body, {
+    subtree: true,
+    childList: true,
   });
+
+  browser.runtime.sendMessage({action: 'show'});
 }
 initialize();
