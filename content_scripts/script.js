@@ -71,10 +71,9 @@ async function initialize() {
 
   browser.runtime.onMessage.addListener((message, _, sendResponse) => {
     try {
-      selector = message.selector || selector;
-
       switch (message.action) {
         case 'change':
+          selector = message.selector;
           unjustify();
           justify(selector);
           displayToast(selector);
