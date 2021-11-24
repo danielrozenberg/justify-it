@@ -39,6 +39,9 @@
     "page": "options_ui/options.html",
     "browser_style": true
   },
+  "web_accessible_resources": [
+    "style/style.css"
+  ],
   "browser_specific_settings": {
     "gecko": {
       "id": "justify-it@firefox.danielrozenberg.com"

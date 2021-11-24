@@ -1,10 +1,7 @@
 let injectIntoPage = () => {
-  const {sheet} = document.head.appendChild(document.createElement('style'));
-  sheet.insertRule(
-      `[__justify_it__] {
-        text-align: justify !important;
-        hyphens: auto !important;
-       }`);
+  const linkElement = document.head.appendChild(document.createElement('link'));
+  linkElement.href = browser.runtime.getURL('style/style.css');
+  linkElement.rel = 'stylesheet';
 
   const toastElement = document.body.appendChild(
       document.createElement('justify-it-toast'));
