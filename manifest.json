@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Justify It",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Justify the text of articles, one-time setup per website",
   "author": "Daniel Rozenberg",
   "homepage_url": "https://github.com/danielrozenberg/justify-it",
