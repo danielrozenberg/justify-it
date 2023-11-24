@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title data-i18n-id="welcome-title"></title>
   <meta charset="utf-8">
   <link href="chrome://browser/content/extension.css" rel="stylesheet">
+  <style>
+    body,
+    button {
+      font-size: 2rem;
+    }
+  </style>
 </head>
 <body>
   <header class="panel-section panel-section-header">
-    <div class="text-section-header" data-i18n-id="extensionName"></div>
+    <div class="text-section-header" data-i18n-id="welcomeTitle"></div>
   </header>
 
   <div class="panel-section panel-section-formElements">
     <div class="panel-formElements-item">
-      <label for="selector" data-i18n-id="panelSelectorLabel"></label>
-      <input type="text" id="selector" placeholder="p, article, …" autofocus>
+      <label for="grant" data-i18n-id="welcomeDescription"></label>
     </div>
-
     <div class="panel-formElements-item">
-      <button id="clear" data-i18n-id="panelClearButton"></button>
+      <button id="grant" data-i18n-id="welcomeActionButton"></button>
     </div>
   </div>
 
-  <script src="./panel.mjs"></script>
+  <script src="./welcome.mjs" type="module"></script>
 </body>
 </html>

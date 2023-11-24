@@ -1,3 +1,4 @@
+import { localizeDocument } from './common/localization';
 import { getSelectorForHostname } from './common/options';
 
 import type { MessageToBackground } from './types/messages';
@@ -79,4 +80,6 @@ async function initialize() {
     window.close();
   });
 }
+
+localizeDocument();
 initialize();

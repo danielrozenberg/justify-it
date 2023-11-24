@@ -1,0 +1,62 @@
+{
+  "extensionName": {
+    "message": "Justify It",
+    "description": "Name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Justify the text of articles, one-time setup per website",
+    "description": "Description of the extension"
+  },
+  "pageActionDefaultTitle": {
+    "message": "Justify It (off)\n\n(middle-click to write your own CSS)",
+    "description": "The default title for the page action, when the extension is off"
+  },
+  "pageActionOnTitle": {
+    "message": "Justifying $SELECTOR$\n\n(middle-click to write your own CSS)",
+    "description": "The title for the page action when a selector is active and the extension is on",
+    "placeholders": {
+      "selector": {
+        "content": "$1",
+        "example": "p"
+      }
+    }
+  },
+  "welcomeTitle": {
+    "message": "Welcome to Justify It",
+    "description": "Title of the welcome page"
+  },
+  "welcomeDescription": {
+    "message": "This extension requires access to all websites to function:",
+    "description": "Explanation of why the welcome page popped up"
+  },
+  "welcomeActionButton": {
+    "message": "Grant permission",
+    "description": "Text to display on the button that will trigger the grant permission workflow"
+  },
+  "toastTitle": {
+    "message": "Justify It:",
+    "description": "The title part of the toast message"
+  },
+  "toastMessageOn": {
+    "message": "Justifying $SELECTOR$",
+    "description": "The message part of the toast message, when a selector has been chosen",
+    "placeholders": {
+      "selector": {
+        "content": "$1",
+        "example": "p"
+      }
+    }
+  },
+  "toastMessageOff": {
+    "message": "Off",
+    "description": "The message part of the toast message, when the selector is cleared"
+  },
+  "panelSelectorLabel": {
+    "message": "Choose a CSS selector to justity text on:",
+    "description": "The label before the selector input text"
+  },
+  "panelClearButton": {
+    "message": "Clear",
+    "description": "Text on the button to clear the selector"
+  }
+}

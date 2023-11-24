@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Justify It",
+  "name": "__MSG_extensionName__",
   "version": "1.0.11",
-  "description": "Justify the text of articles, one-time setup per website",
+  "description": "__MSG_extensionDescription__",
   "author": "Daniel Rozenberg",
   "homepage_url": "https://github.com/danielrozenberg/justify-it",
   "icons": {
@@ -22,12 +22,13 @@
   ],
   "page_action": {
     "default_icon": "icons/icon.svg",
-    "default_title": "Justify It (off)\n\n(middle-click to write your own CSS)",
+    "default_title": "__MSG_pageActionDefaultTitle__",
     "show_matches": ["*://*/*"]
   },
   "options_ui": {
     "page": "options.html"
   },
+  "default_locale": "en",
   "browser_specific_settings": {
     "gecko": {
       "id": "justify-it@firefox.danielrozenberg.com"

@@ -1,3 +1,4 @@
+import { ALL_HOST_PERMISSION } from './common/host-permission';
 import {
   type SelectorsByHostnames,
   getSelectorForHostname,
@@ -49,7 +50,7 @@ async function updatePageActionData(tabId: number, selector: string) {
     await Promise.all([
       browser.pageAction.setIcon({ path: 'icons/active.svg', tabId }),
       browser.pageAction.setTitle({
-        title: `Justifying ${selector}\n\n(middle-click to write your own CSS)`,
+        title: browser.i18n.getMessage('pageActionOnTitle', [selector]),
         tabId,
       }),
     ]);
@@ -150,5 +151,12 @@ browser.runtime.onInstalled.addListener(async ({ previousVersion }) => {
       });
       await browser.storage.sync.remove('displayToast');
     }
+  }
+
+  if (!(await browser.permissions.contains(ALL_HOST_PERMISSION))) {
+    await browser.tabs.create({
+      active: true,
+      url: browser.runtime.getURL('welcome.html'),
+    });
   }
 });

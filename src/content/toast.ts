@@ -1,5 +1,9 @@
 import { getOptions } from '../common/options';
 
+import type { Browser } from 'webextension-polyfill';
+
+declare const browser: Browser;
+
 const TOAST_DISPLAY_MS = 1000;
 const TOAST_FADE_OUT_MS = 200;
 
@@ -18,7 +22,7 @@ const STYLE_TEXT = `
   inset-inline-end: .5em;
   inset-block-start: .5em;
   position: fixed;
-  z-index: 999999;
+  z-index: 999999999;
 }
 
 dialog {
@@ -83,11 +87,14 @@ export class ToastController {
     if (displayToast) {
       if (selector) {
         this.toastElement = new HTMLToastElement(
-          'Justify It:',
-          `Justifying ${selector}`,
+          browser.i18n.getMessage('toastTitle'),
+          browser.i18n.getMessage('toastMessageOn', [selector]),
         );
       } else {
-        this.toastElement = new HTMLToastElement('Justify It:', 'Off');
+        this.toastElement = new HTMLToastElement(
+          browser.i18n.getMessage('toastTitle'),
+          browser.i18n.getMessage('toastMessageOff'),
+        );
       }
     }
   }
