@@ -1,7 +1,7 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Justify It",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Justify the text of articles, one-time setup per website",
   "author": "Daniel Rozenberg",
   "homepage_url": "https://github.com/danielrozenberg/justify-it",
@@ -9,39 +9,25 @@
     "48": "icons/icon.svg",
     "96": "icons/icon.svg"
   },
-  "permissions": [
-    "activeTab",
-    "menus",
-    "storage"
-  ],
+  "permissions": ["activeTab", "menus", "scripting", "storage"],
+  "host_permissions": ["*://*/*"],
   "background": {
-    "scripts": [
-      "background_scripts/script.js"
-    ]
+    "scripts": ["background.mjs"]
   },
   "content_scripts": [
     {
-      "matches": [
-        "*://*/*"
-      ],
-      "js": [
-        "content_scripts/toast.js",
-        "content_scripts/script.js"
-      ]
+      "matches": ["*://*/*"],
+      "js": ["content.mjs"]
     }
   ],
   "page_action": {
     "default_icon": "icons/icon.svg",
-    "default_title": "Justify It (off)",
+    "default_title": "Justify It (off)\n\n(middle-click to write your own CSS)",
     "show_matches": ["*://*/*"]
   },
   "options_ui": {
-    "page": "options_ui/options.html",
-    "browser_style": true
+    "page": "options.html"
   },
-  "web_accessible_resources": [
-    "style/style.css"
-  ],
   "browser_specific_settings": {
     "gecko": {
       "id": "justify-it@firefox.danielrozenberg.com"
