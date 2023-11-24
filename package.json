@@ -1,6 +1,6 @@
 {
   "name": "justify-it",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Justify the text of articles, one-time setup per website",
   "type": "module",
   "repository": {
