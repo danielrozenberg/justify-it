@@ -1,3 +1,4 @@
+import { localizeDocument } from './common/localization';
 import { type Options, getOptions } from './common/options';
 
 import type { Browser } from 'webextension-polyfill';
@@ -22,3 +23,4 @@ async function initialize() {
 }
 
 initialize();
+localizeDocument();

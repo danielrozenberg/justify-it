@@ -33,6 +33,10 @@
     "message": "Grant permission",
     "description": "Text to display on the button that will trigger the grant permission workflow"
   },
+  "optionsDisplayToastLabel": {
+    "message": "Display notification when changing Justify It rules on a page",
+    "description": "The label for the the checkbox to display/hide in-page notifications"
+  },
   "toastTitle": {
     "message": "Justify It:",
     "description": "The title part of the toast message"
