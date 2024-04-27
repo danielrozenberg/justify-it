@@ -19,47 +19,39 @@ const STYLE_TEXT = `
 
 :host {
   animation: autohide ${TOAST_FADE_OUT_MS}ms ease-out ${TOAST_DISPLAY_MS}ms forwards;
-  inset-inline-end: .5em;
-  inset-block-start: .5em;
-  position: fixed;
-  z-index: 999999999;
-}
-
-dialog {
   background-color: rgba(0, 0, 0, .5);
   border: 0;
   border-radius: 1em;
   color: white;
-  margin: 0;
-  position: static;
+  margin-block-start: .5em;
+  margin-inline-end: .5em;
+  padding: 1em;
 }`;
 
 export class HTMLToastElement extends HTMLElement {
   constructor(title: string, message: string) {
     super();
+    this.setAttribute('popover', 'manual');
 
     const shadowRoot = this.attachShadow({ mode: 'open' });
     const style = shadowRoot.appendChild(document.createElement('style'));
     style.textContent = STYLE_TEXT;
 
-    const dialogElement = shadowRoot.appendChild(
-      document.createElement('dialog'),
-    );
-    dialogElement.setAttribute('open', '');
-
-    const titleTextElement = dialogElement.appendChild(
+    const titleTextElement = shadowRoot.appendChild(
       document.createElement('strong'),
     );
     titleTextElement.textContent = title;
 
-    dialogElement.appendChild(document.createTextNode(' '));
+    shadowRoot.appendChild(document.createTextNode(' '));
 
-    const messageTextElement = dialogElement.appendChild(
+    const messageTextElement = shadowRoot.appendChild(
       document.createElement('span'),
     );
     messageTextElement.textContent = message;
 
     document.body.appendChild(this);
+    this.showPopover();
+
     setTimeout(() => {
       this.remove();
     }, TOAST_DISPLAY_MS + TOAST_FADE_OUT_MS);
