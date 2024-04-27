@@ -13,9 +13,6 @@ browser.runtime.onMessage.addListener(async (message: MessageToContent) => {
     case 'toastNewSelector':
       toastController.displayToast(message.selector);
       break;
-
-    case 'returnHostname':
-      return window.location.hostname;
   }
 });
 

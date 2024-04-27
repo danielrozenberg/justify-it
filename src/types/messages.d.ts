@@ -10,11 +10,7 @@ export declare type MessageToBackground =
       hostname: string;
     };
 
-export declare type MessageToContent =
-  | {
-      action: 'toastNewSelector';
-      selector: string;
-    }
-  | {
-      action: 'returnHostname';
-    };
+export declare interface MessageToContent {
+  action: 'toastNewSelector';
+  selector: string;
+}
