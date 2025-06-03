@@ -1,7 +1,7 @@
-import { type Browser } from 'webextension-polyfill';
-
 import { ALL_HOST_PERMISSION } from './common/host-permission';
 import { localizeDocument } from './common/localization';
+
+import type { Browser } from 'webextension-polyfill';
 
 declare const browser: Browser;
 

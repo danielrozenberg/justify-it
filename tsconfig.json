@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "module": "Preserve",
     "target": "ESNext",
-    "moduleResolution": "Bundler",
-    "strictNullChecks": true
-  },
-  "include": ["**/*.ts"]
+    "strict": true
+  }
 }

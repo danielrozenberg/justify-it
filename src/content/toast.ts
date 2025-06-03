@@ -18,7 +18,7 @@ const STYLE_TEXT = `
 }
 
 :host {
-  animation: autohide ${TOAST_FADE_OUT_MS}ms ease-out ${TOAST_DISPLAY_MS}ms forwards;
+  animation: autohide ${TOAST_FADE_OUT_MS.toFixed(0)}ms ease-out ${TOAST_DISPLAY_MS.toFixed(0)}ms forwards;
   background-color: rgba(0, 0, 0, .5);
   border: 0;
   border-radius: 1em;
@@ -63,7 +63,7 @@ export function registerToastCustomElement() {
 }
 
 export class ToastController {
-  toastElement: HTMLToastElement;
+  toastElement: HTMLToastElement | null = null;
 
   constructor() {
     registerToastCustomElement();

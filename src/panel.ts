@@ -1,13 +1,14 @@
 import { localizeDocument } from './common/localization';
 import { getSelectorForHostname } from './common/options';
+import { $ } from './content/helpers';
 
-import type { MessageToBackground } from './types/messages';
 import type { Browser } from 'webextension-polyfill';
+import type { ChangeSelectorMessage } from './types/messages';
 
 declare const browser: Browser;
 
-const selectorInput = document.getElementById('selector') as HTMLInputElement;
-const clearButton = document.getElementById('clear') as HTMLButtonElement;
+const selectorInput = $('#selector') as HTMLInputElement;
+const clearButton = $('#clear');
 
 async function setOrRemoveSelectorForHostname(
   hostname: string,
@@ -25,18 +26,18 @@ async function setOrRemoveSelectorForHostname(
 }
 
 async function initialize() {
-  const [tab] = await browser.tabs.query({
+  const tabs = await browser.tabs.query({
     currentWindow: true,
     active: true,
   });
-  if (!tab) {
+  if (tabs.length === 0) {
     console.error(
       '[initialize] popup failed to retrieve the current active tab or its URL',
     );
     return;
   }
 
-  const { url: tabUrl, id: tabId } = tab;
+  const { url: tabUrl, id: tabId } = tabs[0];
   if (!tabUrl || !tabId) {
     return;
   }
@@ -50,12 +51,12 @@ async function initialize() {
 
     await Promise.all([
       setOrRemoveSelectorForHostname(hostname, newSelector),
-      browser.runtime.sendMessage({
+      browser.runtime.sendMessage<ChangeSelectorMessage>({
         action: 'changeSelector',
         oldSelector,
         newSelector,
         tabId,
-      } as MessageToBackground),
+      }),
     ]);
 
     oldSelector = newSelector;
@@ -70,16 +71,16 @@ async function initialize() {
   clearButton.addEventListener('click', async () => {
     await Promise.all([
       browser.storage.sync.remove(hostname),
-      browser.runtime.sendMessage({
+      browser.runtime.sendMessage<ChangeSelectorMessage>({
         action: 'changeSelector',
         oldSelector,
         newSelector: '',
         tabId,
-      } as MessageToBackground),
+      }),
     ]);
     window.close();
   });
 }
 
 localizeDocument();
-initialize();
+void initialize();

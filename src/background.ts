@@ -1,12 +1,12 @@
 import { ALL_HOST_PERMISSION } from './common/host-permission';
-import {
-  type SelectorsByHostnames,
-  getSelectorForHostname,
-  type Options,
-} from './common/options';
+import { getSelectorForHostname } from './common/options';
 
-import type { MessageToBackground, MessageToContent } from './types/messages';
-import type { Browser } from 'webextension-polyfill';
+import type { Browser, Runtime } from 'webextension-polyfill';
+import type { Options, SelectorsByHostnamesRecord } from './common/options';
+import type {
+  MessageToBackground,
+  ToastNewSelectorMessage,
+} from './types/messages';
 
 declare const browser: Browser;
 
@@ -47,28 +47,28 @@ async function activateOnTabBySelector(
 
 async function updatePageActionData(tabId: number, selector: string) {
   if (selector) {
-    await Promise.all([
-      browser.pageAction.setIcon({ path: 'icons/active.svg', tabId }),
-      browser.pageAction.setTitle({
-        title: browser.i18n.getMessage('pageActionOnTitle', [selector]),
-        tabId,
-      }),
-    ]);
+    await browser.pageAction.setIcon({ path: 'icons/active.svg', tabId });
+    browser.pageAction.setTitle({
+      title: browser.i18n.getMessage('pageActionOnTitle', [selector]),
+      tabId,
+    });
   } else {
     await Promise.all([
       browser.pageAction.setIcon({ path: undefined, tabId }),
-      browser.pageAction.setTitle({ title: null, tabId }),
       browser.pageAction.setPopup({ popup: '', tabId }),
     ]);
+    browser.pageAction.setTitle({ title: null, tabId });
   }
 }
 
 async function setNextBuiltInSelector(tabId: number, tabUrl?: string) {
-  // `tab.url` is missing on Firefox for Android, so ask for it from the tab's
-  // `browser.runtime.onMessage` handler.
-  const hostname = tabUrl
-    ? new URL(tabUrl).hostname
-    : await browser.tabs.sendMessage(tabId, { action: 'hostname' });
+  if (!tabUrl) {
+    console.warn('[setNextBuiltInSelector] No URL found for the current tab', {
+      tabId,
+    });
+    return;
+  }
+  const hostname = new URL(tabUrl).hostname;
 
   const oldSelector = (await getSelectorForHostname(hostname)) ?? '';
   const newSelector =
@@ -81,16 +81,25 @@ async function setNextBuiltInSelector(tabId: number, tabUrl?: string) {
       [hostname]: {
         selector: newSelector,
       },
-    } as SelectorsByHostnames),
-    browser.tabs.sendMessage(tabId, {
+    } as SelectorsByHostnamesRecord),
+    browser.tabs.sendMessage<ToastNewSelectorMessage>(tabId, {
       action: 'toastNewSelector',
       selector: newSelector,
-    } as MessageToContent),
+    }),
   ]);
 }
 
 browser.runtime.onMessage.addListener(
-  async (message: MessageToBackground, sender) => {
+  async (_message: unknown, sender: Runtime.MessageSender) => {
+    const message = _message as MessageToBackground;
+    if (!('action' in message)) {
+      console.warn(
+        '[browser.runtime.onMessage] listener invoked with invalid message',
+        { message: _message, sender },
+      );
+      return;
+    }
+
     const tabId =
       sender.tab?.id ?? (message.action == 'changeSelector' && message.tabId);
     if (!tabId) {
@@ -115,7 +124,7 @@ browser.runtime.onMessage.addListener(
   },
 );
 
-browser.pageAction.onClicked.addListener((tab, info) => {
+browser.pageAction.onClicked.addListener(async (tab, info) => {
   const tabId = tab.id;
   if (!tabId) {
     console.warn(
@@ -127,9 +136,12 @@ browser.pageAction.onClicked.addListener((tab, info) => {
 
   switch (info?.button) {
     case 1:
-      browser.pageAction.setPopup({ popup: 'panel.html', tabId });
-      browser.pageAction.openPopup();
-      return browser.pageAction.setPopup({ popup: '', tabId });
+      // I'm not sure why, but awaiting these calls breaks the popup opening.
+      // If you know why, please open an issue!
+      void browser.pageAction.setPopup({ popup: 'panel.html', tabId });
+      void browser.pageAction.openPopup();
+      void browser.pageAction.setPopup({ popup: '', tabId });
+      break;
 
     default:
       return setNextBuiltInSelector(tabId, tab.url);
