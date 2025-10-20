@@ -7,6 +7,10 @@
     "message": "Justify the text of articles, one-time setup per website",
     "description": "Description of the extension"
   },
+  "commandDescription": {
+    "message": "Trigger the built-in CSS selector for Justify It",
+    "description": "Description of the command to trigger the built-in CSS selector"
+  },
   "pageActionDefaultTitle": {
     "message": "Justify It (off)\n\n(middle-click to write your own CSS)",
     "description": "The default title for the page action, when the extension is off"

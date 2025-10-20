@@ -14,6 +14,14 @@
   "background": {
     "scripts": ["background.mjs"]
   },
+  "commands": {
+    "_execute_page_action": {
+      "suggested_key": {
+        "default": "Alt+J"
+      },
+      "description": "__MSG_commandDescription__"
+    }
+  },
   "content_scripts": [
     {
       "matches": ["*://*/*"],
