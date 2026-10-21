@@ -9,7 +9,7 @@
     "48": "icons/icon.svg",
     "96": "icons/icon.svg"
   },
-  "permissions": ["activeTab", "scripting", "storage"],
+  "permissions": ["activeTab", "publicSuffix", "scripting", "storage"],
   "host_permissions": ["*://*/*"],
   "background": {
     "scripts": ["background.mjs"]
