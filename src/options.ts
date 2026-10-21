@@ -25,13 +25,12 @@ async function initialize() {
   }
 
   const displayToastElement = $('#displayToast') as HTMLInputElement;
+  const options: Options = {
+    displayToast: displayToastElement.checked,
+  };
 
   displayToastElement.addEventListener('input', async () => {
-    await browser.storage.sync.set({
-      options: {
-        displayToast: displayToastElement.checked,
-      } as Options,
-    });
+    await browser.storage.sync.set({ options });
   });
 
   const { displayToast } = await getOptions();

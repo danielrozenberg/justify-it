@@ -75,13 +75,16 @@ async function setNextBuiltInSelector(tabId: number, tabUrl?: string) {
     SELECTORS_ORDER[
       (SELECTORS_ORDER.indexOf(oldSelector) + 1) % SELECTORS_ORDER.length
     ];
+
+  const storageRecord: SelectorsByHostnamesRecord = {
+    [hostname]: {
+      selector: newSelector,
+    },
+  };
+
   await Promise.all([
     activateOnTabBySelector(tabId, oldSelector, newSelector),
-    browser.storage.sync.set({
-      [hostname]: {
-        selector: newSelector,
-      },
-    } as SelectorsByHostnamesRecord),
+    browser.storage.sync.set(storageRecord),
     browser.tabs.sendMessage<ToastNewSelectorMessage>(tabId, {
       action: 'toastNewSelector',
       selector: newSelector,
@@ -157,10 +160,11 @@ browser.runtime.onInstalled.addListener(async ({ previousVersion }) => {
   // Migrate settings from previous versions of Justify It.
   if (previousVersion && semVerIsOlder(previousVersion, '1.0.11')) {
     const { displayToast } = await browser.storage.sync.get('displayToast');
-    if (displayToast !== undefined) {
-      await browser.storage.sync.set({
-        options: { displayToast } as Options,
-      });
+    if (typeof displayToast === 'boolean') {
+      const options: Options = {
+        displayToast,
+      };
+      await browser.storage.sync.set({ options });
       await browser.storage.sync.remove('displayToast');
     }
   }
