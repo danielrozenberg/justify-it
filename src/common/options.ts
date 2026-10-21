@@ -11,16 +11,24 @@ export declare type SelectorsByHostnamesRecord = Record<
   { selector: string } | undefined
 >;
 
+// Selectors are stored under domain names, so the options key must be something
+// that can never be a hostname: '#' is a forbidden host code point in URLs.
+export const OPTIONS_KEY = '#options';
+
 export async function getOptions(): Promise<Options> {
-  const { options } = (await browser.storage.sync.get('options')) as Record<
+  const stored = (await browser.storage.sync.get(OPTIONS_KEY)) as Record<
     string,
     Options | undefined
   >;
   return (
-    options ?? {
+    stored[OPTIONS_KEY] ?? {
       displayToast: true,
     }
   );
+}
+
+export async function setOptions(options: Options): Promise<void> {
+  return browser.storage.sync.set({ [OPTIONS_KEY]: options });
 }
 
 // Settings are stored per registrable domain (eTLD+1), so that all subdomains of

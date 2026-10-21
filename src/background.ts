@@ -1,18 +1,23 @@
 import { ALL_HOST_PERMISSION } from './common/host-permission';
 import {
+  OPTIONS_KEY,
   getSelectorForHostname,
   getStorageKey,
+  setOptions,
   setSelectorForHostname,
 } from './common/options';
 
 import type { Browser, Runtime } from 'webextension-polyfill';
-import type { Options, SelectorsByHostnamesRecord } from './common/options';
+import type { Options } from './common/options';
 import type {
   MessageToBackground,
   ToastNewSelectorMessage,
 } from './types/messages';
 
 declare const browser: Browser;
+
+// Options used to be stored under a key that could collide with a hostname.
+const LEGACY_OPTIONS_KEY = 'options';
 
 const SELECTORS_ORDER: readonly string[] = ['', 'p', 'article'];
 
@@ -162,7 +167,7 @@ browser.runtime.onInstalled.addListener(async ({ previousVersion }) => {
       const options: Options = {
         displayToast,
       };
-      await browser.storage.sync.set({ options });
+      await setOptions(options);
       await browser.storage.sync.remove('displayToast');
     }
   }
@@ -170,13 +175,16 @@ browser.runtime.onInstalled.addListener(async ({ previousVersion }) => {
   // Re-key per-hostname selectors by registrable domain. When several hostnames
   // map to the same domain, the last one encountered wins.
   if (previousVersion && semVerIsOlder(previousVersion, '1.1.0')) {
-    const stored = (await browser.storage.sync.get(
-      null,
-    )) as SelectorsByHostnamesRecord;
-    const migrated: SelectorsByHostnamesRecord = {};
+    const stored = await browser.storage.sync.get(null);
+    const migrated: Record<string, unknown> = {};
     const staleKeys: string[] = [];
     for (const [key, value] of Object.entries(stored)) {
-      if (key === 'options') {
+      if (key === LEGACY_OPTIONS_KEY) {
+        migrated[OPTIONS_KEY] = value;
+        staleKeys.push(key);
+        continue;
+      }
+      if (key === OPTIONS_KEY) {
         continue;
       }
       let domain = key;

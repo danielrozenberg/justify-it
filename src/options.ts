@@ -1,6 +1,6 @@
 import { ALL_HOST_PERMISSION } from './common/host-permission';
 import { localizeDocument } from './common/localization';
-import { getOptions } from './common/options';
+import { getOptions, setOptions } from './common/options';
 import { $ } from './content/helpers';
 
 import type { Browser } from 'webextension-polyfill';
@@ -30,7 +30,7 @@ async function initialize() {
   };
 
   displayToastElement.addEventListener('input', async () => {
-    await browser.storage.sync.set({ options });
+    await setOptions(options);
   });
 
   const { displayToast } = await getOptions();
