@@ -8,7 +8,7 @@ import {
 } from './common/options';
 
 import type { Browser, Runtime } from 'webextension-polyfill';
-import type { Options } from './common/options';
+import type { Options, SelectorsByHostnamesRecord } from './common/options';
 import type {
   MessageToBackground,
   ToastNewSelectorMessage,
@@ -185,6 +185,11 @@ browser.runtime.onInstalled.addListener(async ({ previousVersion }) => {
         continue;
       }
       if (key === OPTIONS_KEY) {
+        continue;
+      }
+      // Drop empty selectors.
+      if (!(value as SelectorsByHostnamesRecord[string])?.selector) {
+        staleKeys.push(key);
         continue;
       }
       let domain = key;

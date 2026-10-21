@@ -14,17 +14,6 @@ declare const browser: Browser;
 const selectorInput = $('#selector') as HTMLInputElement;
 const clearButton = $('#clear');
 
-async function setOrRemoveSelectorForHostname(
-  hostname: string,
-  selector: string,
-): Promise<void> {
-  if (selector) {
-    return setSelectorForHostname(hostname, selector);
-  } else {
-    return removeSelectorForHostname(hostname);
-  }
-}
-
 async function initialize() {
   const tabs = await browser.tabs.query({
     currentWindow: true,
@@ -50,7 +39,7 @@ async function initialize() {
     const newSelector = selectorInput.value.trim();
 
     await Promise.all([
-      setOrRemoveSelectorForHostname(hostname, newSelector),
+      setSelectorForHostname(hostname, newSelector),
       browser.runtime.sendMessage<ChangeSelectorMessage>({
         action: 'changeSelector',
         oldSelector,

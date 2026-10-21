@@ -54,6 +54,10 @@ export async function setSelectorForHostname(
   hostname: string,
   selector: string,
 ): Promise<void> {
+  // Empty selectors are never stored.
+  if (!selector) {
+    return removeSelectorForHostname(hostname);
+  }
   const record: SelectorsByHostnamesRecord = {
     [getStorageKey(hostname)]: { selector },
   };
