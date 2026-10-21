@@ -1,5 +1,9 @@
 import { localizeDocument } from './common/localization';
-import { getSelectorForHostname } from './common/options';
+import {
+  getSelectorForHostname,
+  removeSelectorForHostname,
+  setSelectorForHostname,
+} from './common/options';
 import { $ } from './content/helpers';
 
 import type { Browser } from 'webextension-polyfill';
@@ -15,13 +19,9 @@ async function setOrRemoveSelectorForHostname(
   selector: string,
 ): Promise<void> {
   if (selector) {
-    return browser.storage.sync.set({
-      [hostname]: {
-        selector,
-      },
-    });
+    return setSelectorForHostname(hostname, selector);
   } else {
-    return browser.storage.sync.remove(hostname);
+    return removeSelectorForHostname(hostname);
   }
 }
 
@@ -70,7 +70,7 @@ async function initialize() {
 
   clearButton.addEventListener('click', async () => {
     await Promise.all([
-      browser.storage.sync.remove(hostname),
+      removeSelectorForHostname(hostname),
       browser.runtime.sendMessage<ChangeSelectorMessage>({
         action: 'changeSelector',
         oldSelector,

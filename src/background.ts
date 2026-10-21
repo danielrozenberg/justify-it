@@ -1,8 +1,11 @@
 import { ALL_HOST_PERMISSION } from './common/host-permission';
-import { getSelectorForHostname } from './common/options';
+import {
+  getSelectorForHostname,
+  setSelectorForHostname,
+} from './common/options';
 
 import type { Browser, Runtime } from 'webextension-polyfill';
-import type { Options, SelectorsByHostnamesRecord } from './common/options';
+import type { Options } from './common/options';
 import type {
   MessageToBackground,
   ToastNewSelectorMessage,
@@ -76,15 +79,9 @@ async function setNextBuiltInSelector(tabId: number, tabUrl?: string) {
       (SELECTORS_ORDER.indexOf(oldSelector) + 1) % SELECTORS_ORDER.length
     ];
 
-  const storageRecord: SelectorsByHostnamesRecord = {
-    [hostname]: {
-      selector: newSelector,
-    },
-  };
-
   await Promise.all([
     activateOnTabBySelector(tabId, oldSelector, newSelector),
-    browser.storage.sync.set(storageRecord),
+    setSelectorForHostname(hostname, newSelector),
     browser.tabs.sendMessage<ToastNewSelectorMessage>(tabId, {
       action: 'toastNewSelector',
       selector: newSelector,
